@@ -5,13 +5,15 @@
     "main": "app.js",
     "scripts": {
         "start": "node ./build/app.js | pino-pretty",
-        "dev": "ts-node-dev -r tsconfig-paths/register src/app.ts | pino-pretty",
+        "dev": "ts-node-dev --files -r tsconfig-paths/register src/app.ts | pino-pretty",
         "build": "tsc"
     },
     "keywords": [],
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "bcryptjs": "^2.4.3",
+        "bullmq": "^4.8.0",
         "compression": "^1.7.4",
         "config": "^3.3.9",
         "cookie-session": "^2.0.0",
@@ -21,20 +23,28 @@
         "helmet": "^7.0.0",
         "hpp": "^0.2.3",
         "http-status-codes": "^2.2.0",
+        "ioredis": "^5.3.2",
+        "jsonwebtoken": "^9.0.2",
+        "lodash": "^4.17.21",
         "mongodb": "^6.0.0",
         "mongoose": "^7.4.5",
         "pino": "^8.15.0",
         "pino-http": "^8.4.0",
         "pino-pretty": "^10.2.0",
-        "tsconfig-paths": "^4.2.0"
+        "redis": "^4.6.8",
+        "tsconfig-paths": "^4.2.0",
+        "zod": "^3.22.2"
     },
     "devDependencies": {
+        "@types/bcryptjs": "^2.4.3",
         "@types/compression": "^1.7.2",
         "@types/config": "^3.3.0",
         "@types/cookie-session": "^2.0.44",
         "@types/cors": "^2.8.13",
         "@types/express": "^4.17.17",
         "@types/hpp": "^0.2.2",
+        "@types/jsonwebtoken": "^9.0.2",
+        "@types/lodash": "^4.14.197",
         "ts-node-dev": "^2.0.0",
         "typescript": "^5.2.2"
     }
