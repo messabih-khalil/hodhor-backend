@@ -6,6 +6,7 @@ import {
     Request,
     NextFunction,
     urlencoded,
+    json,
 } from 'express';
 import HTTP_STATUS from 'http-status-codes';
 import http from 'http';
@@ -16,8 +17,11 @@ import config from 'config';
 import cookieSession from 'cookie-session';
 import compression from 'compression';
 // Project modules
-import { IErrorResponse, CustomErrorHanlder } from '@utils/error-handlers';
-import logger from '@utils/logger';
+import {
+    IErrorResponse,
+    CustomErrorHanlder,
+} from '@src/shared/utils/error-handlers';
+import logger from '@src/shared/utils/logger';
 import appRoutes from '@src/routes';
 // Setup app server
 
@@ -67,7 +71,7 @@ export class Server {
 
     private standardMiddlewares(app: Application) {
         app.use(compression());
-
+        app.use(json());
         app.use(urlencoded({ extended: true, limit: '50mb' }));
     }
 
