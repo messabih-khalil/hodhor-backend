@@ -2,20 +2,20 @@ import express, { Express } from 'express';
 
 import { Server } from '@src//server';
 
-import logger from '@utils/logger';
+import logger from '@src/shared/utils/logger';
+
+import databaseConnection from '@src/shared/helpers/dbConnection';
 
 const log = logger('app.ts');
 
 class Application {
     public initialize(): void {
-        // databaseConnection();
+        databaseConnection();
         const app: Express = express();
         const server: Server = new Server(app);
         server.start();
-        Application.handleExit();
+        // Application.handleExit();
     }
-
-   
 
     private static handleExit(): void {
         process.on('uncaughtException', (error: Error) => {
