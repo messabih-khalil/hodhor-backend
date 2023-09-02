@@ -3,7 +3,15 @@ import { Queue, Worker, QueueEvents, Processor } from 'bullmq';
 import config from 'config';
 import IORedis from 'ioredis';
 
-const connection = new IORedis(config.get<string>('redis_host'));
+const redisConfig = {
+    host: '127.0.0.1',
+    port: 6379,
+    maxRetriesPerRequest: null,
+};
+
+const connection = new IORedis(redisConfig);
+
+connection.setMaxListeners(20);
 
 abstract class BaseWorker {
     worker: Worker;
