@@ -1,5 +1,8 @@
 import jwt, { SignOptions, VerifyOptions, JwtPayload } from 'jsonwebtoken';
 import config from 'config';
+import { Logger } from 'pino';
+import logger from './logger';
+const log: Logger = logger('jwt.ts');
 
 class JWT {
     private secretKey: string;
@@ -36,11 +39,10 @@ class JWT {
             ) as JwtPayload;
             if (decoded.iat) {
                 const issuedAt: Date = new Date(decoded.iat * 1000); // Convert to milliseconds
-                console.log('Token issued at:', issuedAt);
             }
             return decoded;
         } catch (error: any) {
-            console.error('Token validation failed:', error);
+            log.error('Token validation failed:', error);
         }
     }
 }

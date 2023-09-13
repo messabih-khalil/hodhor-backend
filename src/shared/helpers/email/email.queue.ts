@@ -14,3 +14,11 @@ class EmailQueue extends BaseQueue {
 export const createDepartmentEmailQueue: EmailQueue = new EmailQueue(
     'createDepartmentEmail'
 );
+
+export const createTeacherEmailQueue: EmailQueue = new EmailQueue(
+    'createTeacherAccount'
+);
+
+export const studentAbsentEmailQueue: EmailQueue = new EmailQueue(
+    'studentAbsent'
+);
