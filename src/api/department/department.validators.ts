@@ -23,13 +23,13 @@ export const loginBodySchema = z.object({
     body: z.object({
         email: z
             .string({
-                required_error: 'Please provide root name',
+                required_error: 'Please provide a valid department email',
             })
             .email(),
 
         password: z
             .string({
-                required_error: 'Please provide a password',
+                required_error: 'Please provide a valid password',
             })
             .min(20),
     }),

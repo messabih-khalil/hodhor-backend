@@ -14,6 +14,13 @@ class DepartmentRouter {
             [isAuthenticated],
             DepartmentHandlers.prototype.createDepartment
         );
+
+        this.router.get(
+            '/',
+            [isAuthenticated],
+            DepartmentHandlers.prototype.getDepartments
+        );
+
         this.router.post('/login', DepartmentHandlers.prototype.login);
         this.router.post(
             '/logout',

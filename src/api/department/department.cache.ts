@@ -1,5 +1,5 @@
 import { BaseCache } from '@helpers/redis/redis.base';
-import { DepartmentData } from './department.types';
+import { DepartmentData } from '@department/index';
 import { departmentKey } from '@helpers/redis/redis.keys';
 
 class DepartmentCache extends BaseCache {

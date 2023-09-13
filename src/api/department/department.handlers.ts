@@ -1,17 +1,16 @@
 import { BadRequestError } from '@utils/error-handlers';
-import { departmentServices } from './department.services';
+import generator from 'generate-password';
+import HTTP_STATUS from 'http-status-codes';
+
+import { Request, Response, NextFunction } from 'express';
 import {
     DepartmentBodyRequest,
     createDepartmentRequestBodySchema,
     loginBodyRequest,
     loginBodySchema,
-} from './department.validators';
-import generator from 'generate-password';
-import HTTP_STATUS from 'http-status-codes';
+    departmentServices,
+} from '@department/index';
 
-import { Request, Response, NextFunction } from 'express';
-import { departmentCache } from './department.cache';
-import { departmentQueue } from './department.queue';
 import { AsyncErrorHandler } from '@helpers/decorators/asyncError.decorator';
 import Validate from '@helpers/decorators/zod.decorator';
 import { createDepartmentEmailQueue } from '@helpers/email/email.queue';
@@ -26,8 +25,6 @@ class DepartmentHandlers {
         res: Response,
         next: NextFunction
     ) {
-        console.log('User Id : ', req.user);
-
         // 1 - Get Data From Request Body
         const { name, email } = req.body;
 
@@ -43,22 +40,17 @@ class DepartmentHandlers {
             length: 30,
             numbers: true,
         });
-        // 4 - add to cache
-        await departmentCache.addDepartmentToCache({
-            name,
-            email,
-            password,
-            univ_id: req.user.data._id,
-        });
-        // 5 - add to queue
-        departmentQueue.addDepartmentJob('addNewDepartment', {
+
+        // 4 - add department to database
+
+        await departmentServices.create({
             name,
             email,
             password,
             univ_id: req.user.data._id,
         });
 
-        // 6 - send department data to the provided email : add it to the queue
+        // 5 - send department data to the provided email : add it to the queue
         createDepartmentEmailQueue.addEmailJob('createDepartmentAccount', {
             template: departmentTemplate.createDepartmentAccount({
                 name,
@@ -69,7 +61,7 @@ class DepartmentHandlers {
             subject: 'Your department account info',
         });
 
-        // 7 - reponse data
+        // 5 - reponse data
         res.status(HTTP_STATUS.OK).json({
             status: 'success',
             data: {
@@ -77,6 +69,18 @@ class DepartmentHandlers {
                 email,
                 password,
             },
+        });
+    }
+
+    @AsyncErrorHandler
+    async getDepartments(req: Request, res: Response, next: NextFunction) {
+        const departments = await departmentServices.getDepartments(
+            req.user.data._id
+        );
+
+        res.status(HTTP_STATUS.OK).json({
+            status: 'success',
+            data: departments,
         });
     }
 
@@ -95,7 +99,7 @@ class DepartmentHandlers {
         );
 
         if (!departmentAccount) {
-            throw new BadRequestError('Invalid Email');
+            throw new BadRequestError('Invalid department email');
         }
 
         // Compare password
@@ -104,7 +108,7 @@ class DepartmentHandlers {
         );
 
         if (!isPasswordValid) {
-            throw new BadRequestError('Invalid password');
+            throw new BadRequestError('Invalid department password');
         }
 
         // Password is valid, generate JWT token
@@ -114,23 +118,24 @@ class DepartmentHandlers {
         // Store JWT token in cookie session
         req.session = {
             token: token,
+            role : 'department'
         };
 
         res.status(HTTP_STATUS.OK).json({
             status: 'success',
             message: 'Logged in successfully',
-            data: req.session.token,
+            data: { token: req.session.token, department_id: _id },
         });
     }
     // logout from a university account
     async logout(req: Request, res: Response): Promise<void> {
-        console.log(req.user);
-
         req.session = null;
         res.status(HTTP_STATUS.OK).json({
             message: 'Logout successful',
         });
     }
+    
+    
 }
 
 export default DepartmentHandlers;
