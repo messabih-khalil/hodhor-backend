@@ -116,7 +116,11 @@
             "@api/*": ["src/api/*"],
             "@config/*": ["config/*"],
             "@src/*": ["src/*"],
-            "@university/*": ["src/api/university/*"]
+            "@university/*": ["src/api/university/*"],
+            "@department/*": ["src/api/department/*"],
+            "@group/*": ["src/api/group/*"],
+            "@teachers/*": ["src/api/teachers/*"],
+            "@student/*": ["src/api/students/*"]
         }
     }
 }
