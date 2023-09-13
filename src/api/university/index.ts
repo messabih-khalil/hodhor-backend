@@ -1,10 +1,10 @@
 // export types
 
-export * from '@university/univ.types';
-export * from '@university/univ.validators';
-export * from '@university/univ.handlers';
-export * from '@university/univ.models';
-export * from '@university/univ.routes';
-export * from '@university/univ.queue';
-export * from '@university/univ.worker';
-export * from '@university/univ.services';
+export * from '@api/university/univ.types';
+export * from '@api/university/univ.validators';
+export * from '@api/university/univ.handlers';
+export * from '@api/university/univ.models';
+export * from '@api/university/univ.routes';
+export * from '@api/university/univ.queue';
+export * from '@api/university/univ.worker';
+export * from '@api/university/univ.services';

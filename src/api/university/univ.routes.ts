@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { UniversityHandlers } from '@university/index';
+import { UniversityHandlers } from '@api/university/index';
 import { isAuthenticated } from '@middlewares/isAuthenticated.middleware';
 
 class UnivertsityRouter {

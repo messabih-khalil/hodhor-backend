@@ -6,7 +6,7 @@ import {
     loginBodyRequest,
     loginBodySchema,
     univServices,
-} from '@university/index';
+} from '@api/university/index';
 import { AsyncErrorHandler } from '@helpers/decorators/asyncError.decorator';
 import University from './univ.models';
 import { BadRequestError } from '@utils/error-handlers';
@@ -45,8 +45,7 @@ export class UniversityHandlers {
             );
         }
 
-        // add to cache
-        await univCache.addUnivToCache(root, {
+        await univServices.create({
             name,
             root,
             password,
@@ -89,6 +88,7 @@ export class UniversityHandlers {
         // Store JWT token in cookie session
         req.session = {
             token: token,
+            role: 'university',
         };
 
         res.status(HTTP_STATUS.OK).json({
@@ -99,8 +99,6 @@ export class UniversityHandlers {
     }
     // logout from a university account
     async logout(req: Request, res: Response): Promise<void> {
-        console.log(req.user);
-
         req.session = null;
         res.status(HTTP_STATUS.OK).json({
             message: 'Logout successful',

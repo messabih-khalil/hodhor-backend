@@ -1,12 +1,12 @@
 import mongoose, { Schema, Model } from 'mongoose';
 import bcrypt from 'bcryptjs';
 
-import { IUniversity } from '@university/index';
+import { IUniversity } from '@api/university/index';
 
 // Interface for the University model
 interface IUniversityModel extends Model<IUniversity> {
     encryptPassword(password: string): Promise<string>;
-    comparePassword(candidatePassword: string): Promise<boolean>; 
+    comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
 const universitySchema = new Schema<IUniversity>(

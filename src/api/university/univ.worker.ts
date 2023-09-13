@@ -1,6 +1,6 @@
 import logger, { Logger } from '@utils/logger';
 import { Job } from 'bullmq';
-import { univServices } from '@university/index';
+import { univServices } from '@api/university/index';
 
 const log: Logger = logger('univ.worker.ts');
 

@@ -1,4 +1,4 @@
-import { CreateUniversityRequest } from '@university/index';
+import { CreateUniversityRequest } from '@api/university/index';
 import logger, { Logger } from '@utils/logger';
 import University from './univ.models';
 

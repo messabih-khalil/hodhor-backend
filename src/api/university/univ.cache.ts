@@ -1,7 +1,7 @@
 import { BaseCache } from '@helpers/redis/redis.base';
 import { univKey } from '@helpers/redis/redis.keys';
 import { ServerError } from '@utils/error-handlers';
-import { CreateUniversityRequest, univQueue } from '@university/index';
+import { CreateUniversityRequest, univQueue } from '@api/university/index';
 
 class UnivCache extends BaseCache {
     constructor() {
