@@ -2,13 +2,13 @@ import { Request, Response, NextFunction } from 'express';
 import HTTP_STATUS from 'http-status-codes';
 
 import { BadRequestError } from '@utils/error-handlers';
-import { groupServices } from './groups.services';
 import {
+    groupServices,
     CreateGroupBodyRequest,
     UpdateGroupBodyRequest,
     createGroupRequestBodySchema,
     updateGroupRequestBodySchema,
-} from './groups.validators';
+} from '@group/index';
 
 import { AsyncErrorHandler } from '@helpers/decorators/asyncError.decorator';
 import Validate from '@helpers/decorators/zod.decorator';
@@ -25,7 +25,10 @@ class GroupHandlers {
         const { group_key } = req.body;
 
         // 2 - Check if a group with the provided group_key already exists
-        const isExist = await groupServices.getGroupByGroupKey(group_key);
+        const isExist = await groupServices.getGroupByGroupKey(
+            group_key,
+            req.user.data._id
+        );
 
         if (isExist!.length > 0) {
             return next(
@@ -36,8 +39,9 @@ class GroupHandlers {
         // 3 - Create the group
         const groupData = {
             group_key,
-            department_id: req.user.data.id,
+            department_id: req.user.data._id,
         };
+
         const resault = await groupServices.create(groupData);
 
         // 4 - Response data
@@ -58,8 +62,11 @@ class GroupHandlers {
 
             // Fetch all groups from the database
             const groups = !name
-                ? await groupServices.getAllGroups()
-                : await groupServices.getGroupByGroupKey(name as string);
+                ? await groupServices.getAllGroups(req.user.data._id)
+                : await groupServices.getGroupByGroupKey(
+                      name as string,
+                      req.user.data._id
+                  );
 
             res.status(HTTP_STATUS.OK).json({
                 status: 'success',
@@ -80,6 +87,17 @@ class GroupHandlers {
         // 1 - Get the groupKey from the route parameters
         const { groupId } = req.params;
         const updatedData = req.body;
+
+        const isExist = await groupServices.getGroupByGroupKey(
+            updatedData.group_key ?? '',
+            req.user.data._id
+        );
+
+        if (isExist!.length > 0) {
+            return next(
+                new BadRequestError('Provided group_key already exists')
+            );
+        }
 
         // 2 - Update the group by groupKey
         const updatedGroup = await groupServices.updateGroupById(

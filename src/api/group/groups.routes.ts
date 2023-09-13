@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { isAuthenticated } from '@middlewares/isAuthenticated.middleware';
-import GroupHandlers from './groups.handlers';
+import GroupHandlers from '@group/groups.handlers';
 
 class GroupRouter {
     private router: Router;

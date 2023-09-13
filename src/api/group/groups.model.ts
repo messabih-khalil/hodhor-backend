@@ -9,7 +9,7 @@ export interface IGroup extends Document {
 // Define the Mongoose schema
 export const GroupSchema = new Schema<IGroup>({
   group_key: { type: String, index: true },
-  department_id: { type: String, ref: 'Department' },
+  department_id: { type: String, ref: 'Department', required: true },
 });
 
 // Define the model based on the schema
