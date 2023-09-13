@@ -8,8 +8,6 @@ import databaseConnection from '@src/shared/helpers/dbConnection';
 
 const log = logger('app.ts');
 
-
-
 class Application {
     public initialize(): void {
         databaseConnection();
