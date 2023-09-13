@@ -16,6 +16,7 @@ import helmet from 'helmet';
 import config from 'config';
 import cookieSession from 'cookie-session';
 import compression from 'compression';
+
 // Project modules
 import {
     IErrorResponse,
@@ -60,8 +61,8 @@ export class Server {
         app.use(helmet());
         app.use(
             cors({
-                // origin: config.get('client_url') ,
-                origin: '*',
+                origin: config.get('client_url') ,
+                // origin: '*',
                 credentials: true,
                 optionsSuccessStatus: 200,
                 methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
