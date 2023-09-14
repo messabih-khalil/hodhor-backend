@@ -61,7 +61,11 @@ export class Server {
         app.use(helmet());
         app.use(
             cors({
-                origin: config.get('client_url') ,
+                origin: [
+                    config.get('client_url'),
+                    config.get('mobile_url'),
+                    '127.0.0.1:*',
+                ],
                 // origin: '*',
                 credentials: true,
                 optionsSuccessStatus: 200,
