@@ -38,7 +38,7 @@ class TeacherRouter {
         );
 
         this.router.get(
-            '/:teacherId/groups',
+            '/teacher/groups',
             [isAuthenticated],
             TeacherHandlers.prototype.getGroupsForTeacher
         );
