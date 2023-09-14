@@ -149,6 +149,7 @@ class TeacherHandlers {
             data: {
                 token,
                 full_name,
+                teacher_id: teacher._id,
                 email,
             },
         });
@@ -188,7 +189,7 @@ class TeacherHandlers {
 
     @AsyncErrorHandler
     async getGroupsForTeacher(req: Request, res: Response) {
-        const { teacherId } = req.params;
+        const teacherId = req.user.data._id;
 
         // Call the service method to get the groups for the teacher
         const data = await teacherServices.getGroupsWithStudentsForTeacher(
