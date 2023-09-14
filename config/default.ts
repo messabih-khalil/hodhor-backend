@@ -1,6 +1,7 @@
 export default {
     server_port: process.env.SERVER_PORT || 5000,
     client_url: process.env.CLIENT_URL,
+    mobile_url: process.env.MOBILE_URL,
     node_env: process.env.NODE_ENV,
     database_uri: process.env.DATABASE_URI,
     redis_host: process.env.REDIS_HOST,
