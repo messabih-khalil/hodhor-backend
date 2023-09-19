@@ -120,7 +120,8 @@
             "@department/*": ["src/api/department/*"],
             "@group/*": ["src/api/group/*"],
             "@teachers/*": ["src/api/teachers/*"],
-            "@student/*": ["src/api/students/*"]
+            "@student/*": ["src/api/students/*"],
+            "@auth/*": ["src/api/auth/*"]
         }
     }
 }
