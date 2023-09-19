@@ -21,13 +21,6 @@ class DepartmentRouter {
             DepartmentHandlers.prototype.getDepartments
         );
 
-        this.router.post('/login', DepartmentHandlers.prototype.login);
-        this.router.post(
-            '/logout',
-            [isAuthenticated],
-            DepartmentHandlers.prototype.logout
-        );
-
         return this.router;
     }
 }
