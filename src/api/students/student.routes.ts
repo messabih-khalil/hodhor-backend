@@ -3,6 +3,7 @@ import { Router } from 'express';
 import { isAuthenticated } from '@middlewares/isAuthenticated.middleware';
 import StudentHandlers from '@student/student.handlers';
 import multer from 'multer';
+import { parser } from '@utils/cloudinary-upload';
 
 const upload = multer({ dest: 'tmp/csv/' });
 
@@ -59,7 +60,7 @@ class StudentRouter {
 
         this.router.post(
             '/:studentId/submit-justification',
-            [isAuthenticated],
+            [isAuthenticated , parser.single('image')],
             StudentHandlers.prototype.submitJustification
         );
 

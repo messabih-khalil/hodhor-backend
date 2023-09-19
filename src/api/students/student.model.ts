@@ -17,30 +17,37 @@ export interface IStudent extends Document {
     absences: any[];
 }
 
-const studentSchema = new Schema<IStudent>({
-    studentId: { type: mongoose.Types.ObjectId, index: true },
-    full_name: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
-    group_id: { type: String, ref: 'Group', required: true },
-    department_id: { type: String, ref: 'Department', required: true },
-    absences: [
-        {
-            absense_id: Schema.Types.ObjectId,
-            teacher_id: {
-                type: String,
-                ref: 'Teacher',
+const studentSchema = new Schema<IStudent>(
+    {
+        studentId: { type: mongoose.Types.ObjectId, index: true },
+        full_name: { type: String, required: true },
+        email: { type: String, required: true, unique: true },
+        group_id: { type: String, ref: 'Group', required: true },
+        department_id: { type: String, ref: 'Department', required: true },
+        absences: [
+            {
+                absense_id: Schema.Types.ObjectId,
+                teacher_id: {
+                    type: String,
+                    ref: 'User',
+                },
+                absences_count: Number,
+                justifications: [],
+                created_at: Date,
             },
-            absences_count: Number,
-            justifications: [],
-            created_at: Date,
-        },
-    ], 
-});
+        ],
+    },
+    { versionKey: false }
+);
 
 // Define default population and field selection options
 const defaultPopulateOptions = [
     {
         path: 'group_id',
+    },
+    {
+        path: 'absences.teacher_id',
+        select: 'username',
     },
 ];
 

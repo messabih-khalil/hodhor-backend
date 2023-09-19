@@ -12,7 +12,8 @@ import { BadRequestError } from '@utils/error-handlers';
 import { studentAbsentEmailQueue } from '@helpers/email/email.queue';
 import { studentTemplates } from '@helpers/email/templates/students/student.absent';
 
-import Teacher from '@api/teachers/teacher.models';
+
+import { authService } from '@api/auth/auth.services';
 
 const log: Logger = logger('student.services.ts');
 
@@ -44,7 +45,6 @@ class StudentServices {
                 department_id,
                 group_id: groupId,
             }).populate('absences.teacher_id');
-
 
             return students;
         } catch (error) {
@@ -164,6 +164,7 @@ class StudentServices {
                 student.absences.push({
                     absense_id: new mongoose.Types.ObjectId().toString(),
                     teacher_id: studentData.teacher_id,
+
                     absences_count: 1,
                     justifications: [],
                     created_at: new Date(),
@@ -171,28 +172,29 @@ class StudentServices {
             } else {
                 // If absence already exists, increase the absences_count
                 student.absences[absenceIndex].absences_count++;
-
-                student.markModified('absences');
             }
 
+            student.markModified('absences');
+
             // Save the updated student document
-            await student.save();
+            const result = await student.save();
 
             // Send mail to notify student for his absent
 
-            const teacher = await Teacher.findOne({
-                _id: studentData.teacher_id,
-            }).exec();
+            const teacherAccount = await authService.getUserById(
+                studentData.teacher_id
+            );
 
             studentAbsentEmailQueue.addEmailJob('createTeacherAccount', {
                 template: studentTemplates.createStudnetAbsent({
-                    full_name: student.full_name,
-                    from: teacher?.full_name as string,
-                    absents_count:
-                        student.absences[absenceIndex].absences_count,
+                    full_name: result.full_name,
+                    from: teacherAccount?.username as string,
+                    absents_count: result.absences[absenceIndex]
+                        ? result.absences[absenceIndex].absences_count
+                        : 1,
                 }),
                 receiverEmail: student.email,
-                subject: 'Absent Notify ',
+                subject: '@Hodhor : You have a new absence notification',
             });
 
             return student;
@@ -282,6 +284,8 @@ class StudentServices {
             if (student.absences[absenceIndex].absences_count <= 0) {
                 throw new BadRequestError('Absences count is already at 0');
             }
+            
+            
 
             // Add the justification URL to the absences record
             student.absences[absenceIndex].justifications.push(

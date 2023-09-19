@@ -212,14 +212,15 @@ class StudentHandlers {
     ) {
         const { studentIds } = req.body;
 
+        const studentQueue = new StudentQueue(
+            'increaseOrUpdateAbsenceQueue',
+            studentWorker.increaseAbsenceWorker
+        );
         // Loop through the list of student IDs
         for (const studentId of studentIds) {
             // Increase or update absence for each student
             // Add increase or update absence job to the queue
-            const studentQueue = new StudentQueue(
-                'increaseOrUpdateAbsenceQueue',
-                studentWorker.increaseAbsenceWorker
-            );
+
             studentQueue.addStudentJob('increaseOrUpdateAbsence', {
                 studentId,
                 teacher_id: req.user.data._id,
@@ -233,18 +234,10 @@ class StudentHandlers {
     }
 
     @AsyncErrorHandler
-    async submitJustification(
-        req: Request<
-            { studentId: string },
-            {},
-            { image_url: string; absense_id: string }
-        >,
-        res: Response,
-        next: NextFunction
-    ) {
+    async submitJustification(req: Request, res: Response, next: NextFunction) {
         const { studentId } = req.params;
-        const { image_url, absense_id } = req.body;
-
+        const { absense_id } = req.body;
+        const file = req.file!.path;
         const { randomUUID } = new ShortUniqueId({ length: 10 });
 
         // Add submit justification job to the queue
@@ -254,7 +247,7 @@ class StudentHandlers {
         );
         studentQueue.addStudentJob('submitJustification', {
             studentId,
-            image_url,
+            image_url: file,
             absense_id,
             _id: randomUUID(),
             created_at: new Date().toISOString(),
