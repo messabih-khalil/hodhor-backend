@@ -5,16 +5,12 @@ import University from './univ.models';
 const log: Logger = logger('univ.services.ts');
 
 class UnivServices {
-    async create(univData: CreateUniversityRequest) {
+    async create(univData: { location: string; user_id: string }) {
         try {
             await University.create(univData);
         } catch (error) {
             log.error(error);
         }
-    }
-
-    async getUnivByRoot(root: string) {
-        return await University.findOne({ root });
     }
 }
 

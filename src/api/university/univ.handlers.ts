@@ -3,19 +3,16 @@ import { NextFunction, Request, Response } from 'express';
 import {
     CreateUniversityRequest,
     universityBodySchema,
-    loginBodyRequest,
-    loginBodySchema,
     univServices,
 } from '@api/university/index';
 import { AsyncErrorHandler } from '@helpers/decorators/asyncError.decorator';
-import University from './univ.models';
+
 import { BadRequestError } from '@utils/error-handlers';
-import { univCache } from './univ.cache';
-import { jwtUtil } from '@utils/jwt';
+
 import _ from 'lodash';
 import HTTP_STATUS from 'http-status-codes';
-
-// ***************
+import { authService } from '@api/auth/auth.services';
+import generator from 'generate-password';
 
 export class UniversityHandlers {
     // create university account
@@ -26,82 +23,41 @@ export class UniversityHandlers {
         res: Response,
         next: NextFunction
     ) {
-        const { name, root, password, location } = req.body;
+        const { username, email, location } = req.body;
 
-        // check if university with the given name or root exist
+        // Check if a teacher with the provided email exists
+        const isExist = await authService.getUserByEmail(email);
 
-        const isExist = await University.find({
-            $or: [
-                {
-                    name,
-                },
-                { root },
-            ],
-        }).exec();
-
-        if (isExist.length > 0) {
-            throw new BadRequestError(
-                'University With given credantials already exist'
+        if (isExist) {
+            next(
+                new BadRequestError(
+                    'Teacher with the provided email already exists'
+                )
             );
         }
 
-        await univServices.create({
-            name,
-            root,
+        // Generate a strong password
+        const password = generator.generate({
+            length: 30,
+            numbers: true,
+        });
+
+        // create new teacher account
+        const user = await authService.createUser({
+            username,
+            email,
             password,
+            role: 'university',
+        });
+
+        await univServices.create({
             location,
+            user_id: user._id,
         });
 
         res.status(HTTP_STATUS.OK).json({
             status: 'success',
             message: 'account created successfully',
-        });
-    }
-
-    // login into university account
-    @Validate(loginBodySchema)
-    @AsyncErrorHandler
-    async login(
-        req: Request<{}, {}, loginBodyRequest['body']>,
-        res: Response
-    ): Promise<void> {
-        const { root, password } = req.body;
-
-        // Get user by root
-        const univAccount = await univServices.getUnivByRoot(root);
-
-        if (!univAccount) {
-            throw new BadRequestError('Invalid Root name');
-        }
-
-        // Compare password
-        const isPasswordValid = await univAccount.comparePassword(password);
-
-        if (!isPasswordValid) {
-            throw new BadRequestError('Invalid password');
-        }
-
-        // Password is valid, generate JWT token
-        const { _id, name, location } = univAccount;
-        const token = jwtUtil.generateJWT({ _id, name, location, root });
-
-        // Store JWT token in cookie session
-        req.session = {
-            token: token,
-            role: 'university',
-        };
-
-        res.status(HTTP_STATUS.OK).json({
-            status: 'success',
-            message: 'Logged in successfully',
-            data: req.session.token,
-        });
-    }
-    // logout from a university account
-    async logout(req: Request, res: Response): Promise<void> {
-        req.session = null;
-        res.status(HTTP_STATUS.OK).json({
-            message: 'Logout successful',
         });
     }
 }
