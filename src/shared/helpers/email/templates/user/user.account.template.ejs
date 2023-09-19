@@ -10,9 +10,10 @@
             name="viewport"
             content="width=device-width, initial-scale=1.0"
         />
+
         <style>
             * {
-                font-family: Arial, sans-serif;
+                font-family: arial;
             }
 
             body {
@@ -57,13 +58,6 @@
                 text-align: center;
                 font-weight: bold;
             }
-
-            .deadline {
-                text-align: center;
-                margin-top: 1rem;
-                font-weight: bold;
-                color: red;
-            }
         </style>
     </head>
     <body>
@@ -75,26 +69,21 @@
                 />
             </div>
 
-            <h1>Absence Notification</h1>
+            <!---->
 
+            <h1>
+                Your Account <br />
+                Information
+            </h1>
+
+            <!---->
             <div class="info">
-                <p><span class="label">From : </span> <%= from %></p>
-                <p><span class="label">Full name : </span> <%= full_name %></p>
-                <p>
-                    <span class="label">Absent Number : </span> <%=
-                    absents_count %>
-                </p>
+                <p><span class="label">Full name</span> : <%= full_name %></p>
+                <p><span class="label">Email</span> : <%= email %></p>
+                <p><span class="label">Password</span> : <%= password %></p>
             </div>
 
-            <div class="deadline">
-                <p>
-                    <span style="color: red">Important:</span> You have a
-                    maximum of 72 hours to visit the department and justify your
-                    absence.
-                </p>
-            </div>
-
-            <footer>Your Department</footer>
+            <footer>Hodhor@2024</footer>
         </div>
     </body>
 </html>

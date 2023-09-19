@@ -9,7 +9,6 @@ class EmailWorker {
         try {
             const { template, receiverEmail, subject } = job.data;
             await mailTransport.sendEmail(receiverEmail, subject, template);
-            log.info('email sended to ', receiverEmail);
         } catch (error) {
             log.error(error);
         }
