@@ -1,12 +1,10 @@
 import mongoose, { Document, Model, Schema } from 'mongoose';
 import bcrypt from 'bcryptjs';
 
-interface ITeacher extends Document {
-    full_name: string;
-    email: string;
-    password: string;
-    groups: string[];
+export interface ITeacher extends Document {
     department_id?: string;
+    groups: string[];
+    user_id: string;
     comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
@@ -15,20 +13,6 @@ interface ITeacherModel extends Model<ITeacher> {
 }
 
 const teacherSchema = new Schema({
-    full_name: {
-        type: String,
-        required: true,
-    },
-    email: {
-        type: String,
-        index: true,
-        required: true,
-        unique: true,
-    },
-    password: {
-        type: String,
-        required: true,
-    },
     groups: [
         {
             type: Schema.Types.ObjectId,
@@ -40,38 +24,22 @@ const teacherSchema = new Schema({
         ref: 'Department',
         required: true,
     },
+    user_id: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
+    },
 });
-
-teacherSchema.pre<ITeacher>('save', async function (next) {
-    if (!this.isModified('password')) {
-        return next();
-    }
-
-    try {
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(this.password, salt);
-        this.password = hashedPassword;
-        next();
-    } catch (error: any) {
-        return next(error);
-    }
-});
-
-teacherSchema.methods.comparePassword = async function (
-    candidatePassword: string
-): Promise<boolean> {
-    try {
-        return await bcrypt.compare(candidatePassword, this.password);
-    } catch (error) {
-        throw error;
-    }
-};
 
 // Define default population and field selection options
 const defaultPopulateOptions = [
     {
         path: 'groups',
         select: '_id group_key',
+    },
+    {
+        path: 'user_id',
+        select: 'username email role',
     },
 ];
 

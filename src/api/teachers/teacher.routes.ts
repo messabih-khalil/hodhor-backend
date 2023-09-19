@@ -30,15 +30,8 @@ class TeacherRouter {
             TeacherHandlers.prototype.updateTeacher
         );
 
-        this.router.post('/login', TeacherHandlers.prototype.login);
-        this.router.post(
-            '/logout',
-            [isAuthenticated],
-            TeacherHandlers.prototype.logout
-        );
-
         this.router.get(
-            '/teacher/groups',
+            '/groups',
             [isAuthenticated],
             TeacherHandlers.prototype.getGroupsForTeacher
         );
