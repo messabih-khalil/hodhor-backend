@@ -11,4 +11,7 @@ export default {
     sendgrid_api_key: process.env.SENDGRID_API_KEY,
     sender_email: process.env.SENDER_EMAIL,
     sender_email_password: process.env.SENDER_EMAIL_PASSWORD,
+    cloudinary_cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    cloudinary_api_key: process.env.CLOUDINARY_API_KEY,
+    cloudinary_api_secert: process.env.CLOUDINARY_API_SECERT,
 };

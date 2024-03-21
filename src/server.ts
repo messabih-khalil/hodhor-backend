@@ -54,7 +54,7 @@ export class Server {
                 ],
                 maxAge: 24 * 7 * 3600000,
                 secure: config.get('node_env') !== 'development',
-                // sameSite: 'none',
+                sameSite: 'none',
             })
         );
         app.use(hpp());

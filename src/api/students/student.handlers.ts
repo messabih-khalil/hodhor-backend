@@ -237,6 +237,8 @@ class StudentHandlers {
     async submitJustification(req: Request, res: Response, next: NextFunction) {
         const { studentId } = req.params;
         const { absense_id } = req.body;
+        console.log('File : ----- ', req.file);
+
         const file = req.file!.path;
         const { randomUUID } = new ShortUniqueId({ length: 10 });
 
